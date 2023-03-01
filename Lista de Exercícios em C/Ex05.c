@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <math.h>
 
 typedef struct PairList
 {
@@ -61,13 +62,15 @@ int binarySearchVerify(pair_list *list, int size, int priority){
 
 pair_list mergeSort(pair_list *list, int size){
     pair_list *newList = (pair_list *)malloc(sizeof(pair_list)*size);
-    if(size > 2){
-        
+    if(size > 1){
+        int newSize1 = size/2;
+        int newSize2 = size - size/2;
+        // pairList *list1 = 
     }
     return;
 }
 
-void sort(pair_list *list, int index1, int index2, int end){
+void merge(pair_list *list, pair_list *newList, int index1, int index2, int end){
     pair_list tempVetor[end+1];
     return;
 }
