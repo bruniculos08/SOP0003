@@ -1,0 +1,28 @@
+[
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "result",
+        "kind": 5,
+        "importPath": "Lista de Exercícios em C.rapidao",
+        "description": "Lista de Exercícios em C.rapidao",
+        "peekOfCode": "result = abs(datetime.strptime(\"2022-07-23\", \"%Y-%m-%d\").date() - datetime.strptime(\"2022-03-28\", \"%Y-%m-%d\").date())\n# months = int(result/30)\n# days = result%30\nstring = f\"Faltam {abs(int(result.days/30))} meses e {result.days%30} dias para o fim do semestre na UDESC.\"\nprint(string)",
+        "detail": "Lista de Exercícios em C.rapidao",
+        "documentation": {}
+    },
+    {
+        "label": "string",
+        "kind": 5,
+        "importPath": "Lista de Exercícios em C.rapidao",
+        "description": "Lista de Exercícios em C.rapidao",
+        "peekOfCode": "string = f\"Faltam {abs(int(result.days/30))} meses e {result.days%30} dias para o fim do semestre na UDESC.\"\nprint(string)",
+        "detail": "Lista de Exercícios em C.rapidao",
+        "documentation": {}
+    }
+]

@@ -60,17 +60,28 @@ int binarySearchVerify(pair_list *list, int size, int priority){
     return -1;
 }
 
-pair_list mergeSort(pair_list *list, int size){
-    pair_list *newList = (pair_list *)malloc(sizeof(pair_list)*size);
+pair_list *mergeSort(pair_list *list, pair_list *newList, int start, int size){
+    if(newList == NULL) newList = (pair_list *)malloc(sizeof(pair_list)*size);
     if(size > 1){
         int newSize1 = size/2;
         int newSize2 = size - size/2;
-        // pairList *list1 = 
+        mergeSort(list, newList, start, newSize1);
+        mergeSort(list, newList, newSize1, newSize2);
+        merge(list, newList, start, newSize1, newSize2-1);
     }
-    return;
+    return newList;
 }
 
 void merge(pair_list *list, pair_list *newList, int index1, int index2, int end){
-    pair_list tempVetor[end+1];
+    if(index1 == end) newList[index1] = list[index1];
+    else {
+        int newListIndex = index1;
+        while(newListIndex < end+1){
+            if(list[index1].priority >= list[index2].priority){
+                newList[newListIndex] = list[index1];
+                newListIndex++;
+            }
+        }
+    }
     return;
 }
