@@ -38,6 +38,7 @@ void printNames(pair_list *list, int index){
 void insertPair(pair_list *list, int *size, char *nameArg, int priorityArg){
     int index = binarySearchVerify(list, *size, priorityArg);
     if(index == -1){
+        printf("Here %i", index);
         // Aumenta o tamanho da lista de pares:
         *size = *size + 1;
 
