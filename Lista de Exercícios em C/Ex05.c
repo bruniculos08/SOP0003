@@ -38,7 +38,6 @@ void printNames(pair_list *list, int index){
 
 pair_list *insertPair(pair_list *list, int *size, char *nameArg, int priorityArg){
     int index = binarySearchVerify(list, *size, priorityArg);
-    printf("Here %i\n", index);
     if(index == -1){
         
         // Aumenta o tamanho da lista de pares:
@@ -62,29 +61,26 @@ pair_list *insertPair(pair_list *list, int *size, char *nameArg, int priorityArg
 
         // Coloca a prioridade na lista de nomes:
         list[*size-1].priority = priorityArg;
-        printf("Here %s %i\n", list[*size-1].nameList[0], list[*size-1].priority);
         printNames(list, 0);
     }
     else{
         list[index].nameListSize++;
-        printf("NameListSize = %i\n", list[index].nameListSize);
         realloc(list[index].nameList, list[index].nameListSize*sizeof(char**));
+        list[index].nameList[(list[index].nameListSize)-1] = malloc(20*sizeof(char));
         strcpy(list[index].nameList[(list[index].nameListSize)-1], nameArg);
         printNames(list, index);
     }
-    // list = mergeSort(list, 0, *size);
+    list = mergeSort(list, 0, *size);
     return list;
 }
 
 int binarySearchVerify(pair_list *list, int size, int priorityToFind){
     if(list == NULL){
-        printf("Here NULL\n");
         return -1;
     }
     // Retorna o índice ou se não existe retorna -1 (poderia retorna a posição na qual o item estaria mas...
     // ... não sei como usaria isto neste código):
     int middle = size/2;
-    printf("Middle = %d\n", middle);
     int left = 0;
     int right = size;
     while(left != right){
