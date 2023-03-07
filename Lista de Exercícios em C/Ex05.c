@@ -60,28 +60,43 @@ int binarySearchVerify(pair_list *list, int size, int priority){
     return -1;
 }
 
-pair_list *mergeSort(pair_list *list, pair_list *newList, int start, int size){
-    if(newList == NULL) newList = (pair_list *)malloc(sizeof(pair_list)*size);
-    if(size > 1){
-        int newSize1 = size/2;
-        int newSize2 = size - size/2;
-        mergeSort(list, newList, start, newSize1);
-        mergeSort(list, newList, newSize1, newSize2);
-        merge(list, newList, start, newSize1, newSize2-1);
-    }
-    return newList;
+pair_list *mergeSort(pair_list list[], int start, int end){
+    int middle = (end+1)/2 - 1;
+    list = mergeSort(list, start, middle);
+    list = mergeSort(list, middle, end);
+    list = merge(list, start, middle, end);
+    return list;
 }
 
-void merge(pair_list *list, pair_list *newList, int index1, int index2, int end){
-    if(index1 == end) newList[index1] = list[index1];
-    else {
-        int newListIndex = index1;
-        while(newListIndex < end+1){
-            if(list[index1].priority >= list[index2].priority){
-                newList[newListIndex] = list[index1];
-                newListIndex++;
+pair_list *merge(pair_list *list, int left, int right, int end){
+    if(left == right) return list;
+    else{
+        pair_list temp[end-left];
+        int l = 0, r = 0, i = 0;
+        while(1){
+            if(l == left){
+                while(r < right){
+                    temp[i] = list[r];
+                    r++;
+                }
+                break;
             }
+            else if(r == right){
+                while(l < left){
+                    temp[i] = list[l];
+                    l++;
+                }
+                break;
+            }
+            else if(list[l].priority <= list[r].priority){
+                temp[i] = list[l];
+                l++;
+            }
+            else{
+                temp[i] = list[r];
+                r++;
+            }
+            i++;
         }
     }
-    return;
 }
