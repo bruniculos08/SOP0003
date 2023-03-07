@@ -61,6 +61,7 @@ int binarySearchVerify(pair_list *list, int size, int priority){
 }
 
 pair_list *mergeSort(pair_list list[], int start, int end){
+    if(start == end) return list;
     int middle = (end+1)/2 - 1;
     list = mergeSort(list, start, middle);
     list = mergeSort(list, middle, end);
@@ -69,11 +70,14 @@ pair_list *mergeSort(pair_list list[], int start, int end){
 }
 
 pair_list *merge(pair_list *list, int left, int right, int end){
+    // Se os elementos são os mesmos:
     if(left == right) return list;
+    // Senão:
     else{
         pair_list temp[end-left];
-        int l = 0, r = 0, i = 0;
+        int l = left, r = right, i = 0;
         while(1){
+            // Se a 
             if(l == left){
                 while(r < right){
                     temp[i] = list[r];
@@ -98,5 +102,7 @@ pair_list *merge(pair_list *list, int left, int right, int end){
             }
             i++;
         }
+        for(int j = left; j <= right; j++) list[j] = temp[j-left];
     }
+    return list;
 }
