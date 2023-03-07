@@ -55,6 +55,8 @@ pair_list *insertPair(pair_list *list, int *size, char *nameArg, int priorityArg
         list[*size-1].nameList = (char**)malloc(sizeof(char**));
         // realloc(list[*size-1].nameList, sizeof(char**));
 
+        list[*size-1].nameList[0] = malloc(20*sizeof(char));
+
         // Coloca o nome na primeira posição da lista de nomes (pois de início só há um nome):
         strcpy(list[*size-1].nameList[0], nameArg);
 
