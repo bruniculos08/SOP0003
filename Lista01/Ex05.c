@@ -12,6 +12,7 @@ struct PairList{
 
 int binarySearchVerify(pair_list *list, int size, int priorityToFind);
 void printNames(pair_list *list, int index);
+void printList(pair_list *list, int size);
 pair_list *insertPair(pair_list *list, int *size, char *nameArg, int priorityArg);
 pair_list *mergeSort(pair_list *list, int start, int end);
 pair_list *merge(pair_list *list, int left, int right, int end);
@@ -29,6 +30,15 @@ int main(void){
         }
         else if(strcmp(nameArg, "FIM") == 0) break;
         else list = insertPair(list, &listSize, nameArg, priorityArg);
+        printList(list, listSize);
+    }
+}
+
+void printList(pair_list *list, int size){
+    for(int i=0; i<size; i++){
+        printf("List with priority %i: ", list[i].priority);
+        for(int j=0; j<list[i].nameListSize; j++) printf("%s ", list[i].nameList[j]);
+        printf("\n");
     }
 }
 
@@ -61,7 +71,6 @@ pair_list *insertPair(pair_list *list, int *size, char *nameArg, int priorityArg
 
         // Coloca a prioridade na lista de nomes:
         list[*size-1].priority = priorityArg;
-        printNames(list, 0);
     }
     else{
         list[index].nameListSize++;
@@ -75,32 +84,25 @@ pair_list *insertPair(pair_list *list, int *size, char *nameArg, int priorityArg
 }
 
 int binarySearchVerify(pair_list *list, int size, int priorityToFind){
-    if(list == NULL){
-        return -1;
-    }
+    if(list == NULL) return -1;
     // Retorna o índice ou se não existe retorna -1 (poderia retorna a posição na qual o item estaria mas...
     // ... não sei como usaria isto neste código):
-    int middle = size/2;
     int left = 0;
     int right = size-1;
+    int middle = (left + right)/2;
     do{
         if(list[middle].priority == priorityToFind) return middle;
-        else if(list[middle].priority < priorityToFind){
-            left = middle;
-            middle = (left + right)/2;
-        }
-        else{
-            right = middle;
-            middle = (left+middle)/2;
-        }
-    } while(left != right);
+        else if(list[middle].priority > priorityToFind) right = middle - 1;
+        else left = middle + 1;
+        middle = (left + right)/2;
+    } while(left <= right);
     return -1;
 }
 
 pair_list *mergeSort(pair_list *list, int start, int end){
-    if(start >= end) return list;
+    if(list == NULL || start >= end) return list;
     // Note que o meio é o índice de início da lista à direita:
-    int middle = (end)/2;
+    int middle = (end + start)/2;
     list = mergeSort(list, start, middle);
     list = mergeSort(list, middle+1, end);
     list = merge(list, start, middle+1, end);
@@ -108,48 +110,30 @@ pair_list *mergeSort(pair_list *list, int start, int end){
 }
 
 pair_list *merge(pair_list *list, int left, int right, int end){
-    // Se os elementos são os mesmos:
-    if(left == right) return list;
-    // Senão:
-    else{
-        pair_list temp[end-left];
-        int l = left, r = right, i = 0;
-        // Ordenação e preenchimento da lista temporária:
-        while(i < end-left){
-            // Se os elementos da lista à esquerda já acabaram:
-            if(l > right){
-                // Colocar todos os elementos da lista da direita na lista temporária:
-                while(r <= end){
-                    temp[i] = list[r];
-                    i++;
-                    r++;
-                }
-                // Para o preenchimento da lista temporária:
-                break;
-            }
-            // Se os elementos da lista à direita já acabaram:
-            else if(r > end){
-                // Colocar todos os elementos da lista da esquerda na lista temporária:
-                while(l < right){
-                    temp[i] = list[l];
-                    i++;
-                    l++;
-                }
-                // Para o preenchimento da lista temporária:
-                break;
-            }
-            else if(list[l].priority <= list[r].priority){
-                temp[i] = list[l];
-                l++;
-            }
-            else{
-                temp[i] = list[r];
-                r++;
-            }
-            i++;
+    if(list == NULL) return NULL;
+    else if(right > end || left > right) return list;
+
+    pair_list *temp = malloc((1 + end-left)*sizeof(pair_list));
+    int l = left, r = right;
+
+    for(int i = 0; i <= end-left; i++){
+        if(l > right-1){
+            temp[i] = list[r];
+            r++;
         }
-        // Copiando a lista temporária para o seu respectivo lugar na lista definitiva:
-        for(int j = left; j <= end; j++) list[j] = temp[j-left];
+        else if(r > end){
+            temp[i] = list[l];
+            l++;
+        }
+        else if(list[l].priority <= list[r].priority){
+            temp[i] = list[l];
+            l++;
+        }
+        else{
+            temp[i] = list[r];
+            r++;
+        }
     }
+    for(int i = 0; i <= end-left; i++) list[i+left] = temp[i];
     return list;
 }

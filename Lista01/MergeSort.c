@@ -76,7 +76,7 @@ int *merge(int *array, int left, int right, int end) {
     if(array == NULL) return NULL;
     else if(right > end || left > right) return array;
 
-    int *tempArray = malloc((end-left)*sizeof(int));
+    int *tempArray = malloc((1 + end-left)*sizeof(int));
     int l = left, r = right;
     for(int i = 0; i <= end-left; i++){
         if(l > right-1){
