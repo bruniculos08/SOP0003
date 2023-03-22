@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
         {
             printf("main: criando thread %ld\n", t);
             rc = pthread_create(&threads[t], NULL, PrintHello, (void *)t);
-            // (se rc == 1 então a thread não foi criada)
+            // (2.1) Se rc == 1 então a thread não foi criada:
             if (rc)
             {
                 printf("ERRO - rc=%d\n", rc);

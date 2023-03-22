@@ -10,8 +10,8 @@
 #define N 100
 int vetor[N];
 
-#define NTHR 10
-int thread_row[NTHR];
+int NTHR;
+int *thread_row;
 int next_row_element = 0;
 
 void *procuraMenor(void *arg)
@@ -54,10 +54,14 @@ void *procuraMaior(void *arg)
     return (void *)max_value;
 }
 
-int main(void)
+int main(int argc, char **argv)
 {
+    NTHR = atoi(argv[1]);
+    printf("NTHR = %i\n", NTHR);
+    thread_row = malloc(sizeof(int)*NTHR);
     srand(time(NULL));
     pthread_t threads[NTHR];
+    void *status;
     for (int i = 0; i < N; i++)
     {
         vetor[i] = rand()%1000;

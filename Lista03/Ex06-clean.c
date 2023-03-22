@@ -8,33 +8,32 @@
 void *contagem(void *arg){
     long t = (long)arg;
     unsigned int n = (unsigned int) t;
-    // printf("n value = %d\n", n);
+
     unsigned int count = 0;
     for(int i = 0; i <= n; i++) count++;
-    unsigned int *ret = malloc(sizeof(unsigned int));
-    *ret = count;
-    // printf("ret adress = %p\n", ret);
-    // return (void *) ret;
-    pthread_exit((void *) ret);
+    
+    t = (long) count;
+
+    pthread_exit((void *) t);
 }
 
 int main(void){
-    unsigned int count = 0, peace = (unsigned int) ceil( ((int)pow(2, 31))/NUM_THREADS);
-    unsigned int *incremento = 0;
+    unsigned int count = 0, peace = (unsigned int) ceil(((int)pow(2, 31))/NUM_THREADS);
+    void *status;
+    long incremento = 0;
     printf("2^31 = %u\n", (unsigned int) pow(2, 31));
     printf("peace = %u\n\n", peace);
     pthread_t threads[NUM_THREADS];
     for (int i = 0; i < NUM_THREADS ; i++) pthread_create(&threads[i], NULL, contagem, (void *) (long) peace);
     for (int i = 0; i < NUM_THREADS ; i++){
         printf("Esperando thread %i...\n", i);
-        pthread_join(threads[i], (void *)&incremento);
-        // printf("incremento adress = %p and value = %d\n", incremento, *incremento);
-        count += (*incremento);
+        pthread_join(threads[i], &status);
+        incremento = (long) status;
+        count += (unsigned int) (long) incremento;
         printf("Final da thread %i...\n", i);
     }
     printf("\nresto = %u", ((unsigned int)pow(2, 30)%NUM_THREADS + (unsigned int)pow(2, 30)%NUM_THREADS)%NUM_THREADS);
-    // count += (unsigned int)((unsigned int)((unsigned int)pow(2, 30))%NUM_THREADS + (unsigned int)((unsigned int)pow(2, 30))%NUM_THREADS)%NUM_THREADS;
-    count += (unsigned int)(((unsigned int)pow(2, 30))%NUM_THREADS +((unsigned int)pow(2, 30))%NUM_THREADS)%NUM_THREADS;
+    count += ((unsigned int)pow(2, 30)%NUM_THREADS + (unsigned int)pow(2, 30)%NUM_THREADS)%NUM_THREADS;
     printf("\ncount = %u\n", count);
 }
 
