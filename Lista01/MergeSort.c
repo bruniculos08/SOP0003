@@ -3,8 +3,8 @@
 
 void printArray(int *array, int start, int size);
 int binarySearch(int *array, int target, int size);
-int *mergeSort(int *array, int start, int end);
-int *merge(int *array, int left, int right, int end);
+void mergeSort(int *array, int start, int end);
+void merge(int *array, int left, int right, int end);
 
 int main(void) {
     int size;
@@ -33,7 +33,8 @@ int main(void) {
         case 2:
             printf("Unsorted Array:\n");
             printArray(myArray, 0, size);
-            myArray = mergeSort(myArray, 0, size-1);
+            mergeSort(myArray, 0, size-1);
+            // myArray = mergeSort(myArray, 0, size-1);
             printf("Sorted Array:\n");
             printArray(myArray, 0, size);
             break;
@@ -64,17 +65,20 @@ int binarySearch(int *array, int target, int size){
     return -1;
 }
 
-int *mergeSort(int *array, int start, int end) {
-    if(array == NULL || start >= end) return array;
-    array = mergeSort(array, start, (end+start)/2);
-    array = mergeSort(array, (end+start)/2 + 1, end);
-    array = merge(array, start, (end+start)/2 + 1, end);
-    return array;   
+void mergeSort(int *array, int start, int end) {
+    if(array == NULL || start >= end) return;
+    mergeSort(array, start, (end+start)/2);
+    // array = mergeSort(array, start, (end+start)/2);
+    mergeSort(array, (end+start)/2 + 1, end);
+    // array = mergeSort(array, (end+start)/2 + 1, end);
+    merge(array, start, (end+start)/2 + 1, end);
+    // array = merge(array, start, (end+start)/2 + 1, end);
+    return;   
 }
 
-int *merge(int *array, int left, int right, int end) {
-    if(array == NULL) return NULL;
-    else if(right > end || left > right) return array;
+void merge(int *array, int left, int right, int end) {
+    if(array == NULL) return;
+    else if(right > end || left > right) return;
 
     int *tempArray = malloc((1 + end-left)*sizeof(int));
     int l = left, r = right;
@@ -97,5 +101,5 @@ int *merge(int *array, int left, int right, int end) {
         }
     }
     for(int i = 0; i <= end-left; i++) array[i+left] = tempArray[i];
-    return array;
+    return;
 }
