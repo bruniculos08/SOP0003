@@ -16,6 +16,10 @@ void *X(void *argp){
     pthread_mutex_unlock(&mtx);
 }
 
+// Em todo caso se usarmos broadcast só precisamos de uma variável de condição (usando o while) e neste caso, note que...
+// ... podemos usar if mas isto não é recomendado pois segundo a API é possível que uma thread acorde sem ser sinalizada...
+// ... (é provavelmente um caso muito raro mas devemos ser prudentes);
+
 void *Y(void *argp){
     pthread_mutex_lock(&mtx);
     while(n != 56) 

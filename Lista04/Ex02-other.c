@@ -4,7 +4,8 @@
 #include <sys/types.h>
 #include <pthread.h>
 
-// Igual o Ex02.c, porém usando apenas uma variável de condição.
+// Igual o Ex02.c, porém usando apenas uma variável de condição (note que esta solução é menos eficiente pois...
+// ... todas as threads podem acordar e a ultima a verificar a condição ser a que deveria ser liberada).
 
 int n = 1;
 pthread_mutex_t mtx;

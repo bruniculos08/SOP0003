@@ -7,6 +7,7 @@
  * Obs.: esta versão é a alteração do exemplo, utilizando ao invés de um semáforo nomeado, um semáforo anônimo.
  *
  * Para compilar: gcc -pthread -Wall -o prodcons-proc prodcons-proc.c -lrt
+ * ou: gcc prodcons-proc-anonimus.c -Wall -pthread -lrt -o prodcons-proc-anonimus && ./prodcons-proc-anonimus
  */
 
 #include <stdio.h>
@@ -35,8 +36,8 @@ void sair()
 }
 
 typedef struct Shared_bag {
-    sem_t sem_full, sem_empty;
-    int ptr;
+    sem_t *sem_full, *sem_empty;
+    int *ptr;
 } shared_bag;
 
 
@@ -65,9 +66,12 @@ int main(int argc, char *argv[])
     }
 
     int rc;
+    backpack->ptr = malloc(sizeof(int));
+    backpack->sem_empty = malloc(sizeof(sem_t));
+    backpack->sem_full = malloc(sizeof(sem_t));
     
     // (1) Cria o semaforo "full" e o inicializa em 0:
-    rc = sem_init(&backpack->sem_full, 1, 0);
+    rc = sem_init(backpack->sem_full, 1, 0);
     printf("Chegou aqui\n");
     if (rc == -1){
         perror("full");
@@ -75,7 +79,7 @@ int main(int argc, char *argv[])
     }
 
     // (2) Cria o semaforo "empty" e o inicializa em 1:
-    rc = sem_init(&backpack->sem_empty, 1, 1);
+    rc = sem_init(backpack->sem_empty, 1, 1);
     if (rc == -1){
         perror("empty");
         exit(2);
@@ -86,33 +90,33 @@ int main(int argc, char *argv[])
     if (pid == 0){  
         // (6) filho => consumidor:
         while (!sai){
-            if (sem_wait(&backpack->sem_full) == -1){ // (7) => down(&sem_full) + verificacao de erro:
+            if (sem_wait(backpack->sem_full) == -1){ // (7) => down(&sem_full) + verificacao de erro:
                 perror("sem_wait");
                 break;
             }
-            printf("Consumindo: %d\n", backpack->ptr);
-            if (sem_post(&backpack->sem_empty) == -1){ // (8) => up(&sem_empty) + verificacao de erro:
+            printf("Consumindo: %d\n", *(backpack->ptr));
+            if (sem_post(backpack->sem_empty) == -1){ // (8) => up(&sem_empty) + verificacao de erro:
                 perror("sem_post");
                 break;
             }
-            if (backpack->ptr == 0) sai = 1;
+            if (*(backpack->ptr) == 0) sai = 1;
         }
         exit(0);
     }
     else {
         // (9) pai => produtor:   
         while (!sai){
-            if (sem_wait(&backpack->sem_empty) == -1) { // (10) => down(&sem_empty) + verificacao de erro:
+            if (sem_wait(backpack->sem_empty) == -1){ // (10) => down(&sem_empty) + verificacao de erro:
                 perror("sem_wait");
                 break;
             }
-            backpack->ptr = produz();
-            printf("A espera de ser consumido: %d\n\n", backpack->ptr);
-            if (sem_post(&backpack->sem_full) == -1) { // (11) => up(&sem_full) + verificacao de erro:
+            *(backpack->ptr) = produz();
+            printf("A espera de ser consumido: %d\n\n", *(backpack->ptr));
+            if (sem_post(backpack->sem_full) == -1){ // (11) => up(&sem_full) + verificacao de erro:
                 perror("sem_post");
                 break;
             }
-            if (backpack->ptr == 0) sai = 1;
+            if (*(backpack->ptr) == 0) sai = 1;
         }
     }
 
