@@ -13,6 +13,7 @@ int T, N;
 unsigned int *queue;
 unsigned int **matrix;
 pthread_barrier_t waitToLookQueue;
+pthread_barrier_t allThreadsEnded;
 
 void *find_min(void *arg){
     long t = (long) arg;
@@ -33,6 +34,7 @@ void *find_min(void *arg){
             numMenores++;
     }
     printf("(thread %d) menor elemento=%d, threads com elementos menores=%d\n", index, min, numMenores);
+    pthread_barrier_wait(&allThreadsEnded);
     return 0;
 }  
 
@@ -64,7 +66,8 @@ int main(int argc, char *argv[]){
     }
 
     queue = malloc(T*sizeof(unsigned int));
-    pthread_barrier_init(&waitToLookQueue, NULL, T);
+    pthread_barrier_init(&waitToLookQueue, NULL, T+1);
+    pthread_barrier_init(&allThreadsEnded, NULL, T+1);
     pthread_t ths[T];
     for(int i = 0; i < T; i++){
         queue[i] = 100; // definimos 99 como maior elemento;
@@ -74,18 +77,24 @@ int main(int argc, char *argv[]){
         }
     }
 
+    // Poderiamos utilizar pthread_join() mas utilizar ao barreira poderemos olhar a fila antes...
+    // ... das threads encerrarem;
+    pthread_barrier_wait(&waitToLookQueue);
     int min_thread = 0;
     for(int i = 0; i < T; i++){
-        pthread_join(ths[i], NULL);
         if(queue[i] < queue[min_thread]) min_thread = i;
     }
     
+    // De qualquer jeito para que a ordem de print saia corretamente é necessário esperar todas as threads terminarem;
+    pthread_barrier_wait(&allThreadsEnded);
+
     printf("O menor elemento da matriz é: %d\n", queue[min_thread]);
 
     printf("Matriz:\n");
     printMatrix(matrix, N, N);
     printf("Fila:\n");
     printMatrix(&queue, 1, T);
+
 
     return 0;
 }
