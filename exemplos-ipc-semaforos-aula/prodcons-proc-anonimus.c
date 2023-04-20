@@ -69,6 +69,9 @@ int main(int argc, char *argv[])
     backpack->ptr = malloc(sizeof(int));
     backpack->sem_empty = malloc(sizeof(sem_t));
     backpack->sem_full = malloc(sizeof(sem_t));
+
+    // com o sem_open o ponteiro da certo pois o sem_open() faz alocação de modo que na hora de se dar o fork()...
+    // ...o ponteiro apontará para um mesmo lugar da memória compartilhada nos 2 processos.
     
     // (1) Cria o semaforo "full" e o inicializa em 0:
     rc = sem_init(backpack->sem_full, 1, 0);

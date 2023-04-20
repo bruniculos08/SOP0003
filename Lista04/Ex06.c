@@ -52,8 +52,8 @@ void printMatrix(unsigned int **array, int lines, int cols){
 int main(int argc, char *argv[]){
     // T = atoi(argv[1]);
     // N = T*atoi(argv[2]);
-    T = 4;
-    N = 2*T;
+    T = 10;
+    N = 1*T;
 
     srand(time(NULL));
 
@@ -80,6 +80,7 @@ int main(int argc, char *argv[]){
     // Poderiamos utilizar pthread_join() mas utilizar ao barreira poderemos olhar a fila antes...
     // ... das threads encerrarem;
     pthread_barrier_wait(&waitToLookQueue);
+
     int min_thread = 0;
     for(int i = 0; i < T; i++){
         if(queue[i] < queue[min_thread]) min_thread = i;
